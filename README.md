@@ -1,1 +1,1 @@
-# syncano-socket-paypal-subscription-payment
+# syncano-socket-paypal-payment
