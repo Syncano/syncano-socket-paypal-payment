@@ -15,7 +15,7 @@ endpoints:
       for showing single payment details by ID and listing payments that were created. Kindly refer to
       https://developer.paypal.com/docs/api/payments/ for more details.
     parameters:
-      paymentDetails:
+      payment_details:
         type: object
         description: Payment detail parameters for creating and updating a payment
         example: |
@@ -45,7 +45,7 @@ endpoints:
               "description": "This is the payment description."
             }]
           }
-      paymentID:
+      payment_id:
         type: string
         description: The ID of the payment to update or retrieve.
         long_description: |
@@ -67,6 +67,7 @@ endpoints:
               "payer": {
                 "payment_method": "paypal"
               },
+              "httpStatusCode": 201
               ...
             }
         -
@@ -74,5 +75,55 @@ endpoints:
           description: Failed
           example: |
             {
-              "message": "You have to send "firstname" and "lastname" arguments!"
+              "name": "VALIDATION_ERROR",
+              "details": [ ... ],
+              "message": "Invalid request. See details.",
+              "information_link": "https://developer.paypal.com/docs/api/payments/#errors",
+              "httpStatusCode": 400
+            }
+  execute-payment:
+    description: Endpoint executes a PayPal payment that the customer has approved.
+    parameters:
+      payment_id:
+        type: string
+        description: The ID of the payment to execute.
+      payer_id:
+        type: string
+        description: The ID of the payer that PayPal passes in the return_url.
+        example: "22393D847794YKER7MUI"
+      transactions:
+        type: array
+        description: An array of transaction details. For execute the transactions object accepts only the amount object.
+        example: |
+          [
+            {
+              "amount": {
+                "currency": "USD",
+                "total": "1.00"
+              }
+            }
+          ]
+    response:
+      mimetype: application/json
+      examples:
+        -
+          exit_code: 200
+          description: Success
+          example: |
+            {
+              "id": "PAY-9N9834337A9191208KOZOQWI",
+              "create_time": "2017-07-01T16:56:57Z",
+              "update_time": "2017-07-01T17:05:41Z",
+              "state": "approved",
+              ...
+            }
+        -
+          exit_code: 400
+          description: Failed
+          example: |
+            {
+              "name": "INVALID_RESOURCE_ID",
+              "message": "The requested resource ID was not found",
+              "httpStatusCode": 404,
+              ...
             }

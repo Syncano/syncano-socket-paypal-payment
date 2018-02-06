@@ -18,45 +18,12 @@ const callEndpoint = (method, params = null, id = null) => {
   return new Promise((resolve, reject) => {
     paypal.payment[method](...args, (error, result) => {
       if (error) {
-        reject({ error, statusCode: error.httpStatusCode || 400 });
+        reject({ error: error.response, statusCode: error.httpStatusCode || 400 });
       } else {
         resolve({ paypalResponse: result, statusCode: result.httpStatusCode || 200 });
       }
     });
   });
-};
-
-/**
- * Check value empty, undefined or null
- * @param {*} val
- * @returns {boolean}
- */
-const checkRequired = (val) => {
-  if (val === undefined || val === null) {
-    return false;
-  }
-  const str = String(val).replace(/\s/g, '');
-  return str.length > 0;
-};
-
-/**
- * Check for parameters required
- * @param {object} obj
- * @param {string} customMessage
- * @param {number} statusCode
- * @returns {object| null} error response
- */
-const validateRequired = (obj, customMessage = 'Validation error(s)', statusCode = 400) => {
-  const validateMessages = {};
-  Object.keys(obj).forEach((key) => {
-    if (!checkRequired(obj[key])) {
-      validateMessages[key] = `The ${key} field is required`;
-    }
-  });
-
-  if (Object.keys(validateMessages).length > 0) {
-    throw ({ message: customMessage, details: validateMessages, statusCode });
-  }
 };
 
 /**
@@ -100,8 +67,42 @@ const checkRequestMethodType = (requestMethod, expectedMethodTypes, actions) => 
   }
 };
 
+/**
+ * Check value empty, undefined or null
+ * @param {*} val
+ * @returns {boolean}
+ */
+const checkRequired = (val) => {
+  if (val === undefined || val === null) {
+    return false;
+  }
+  const str = String(val).replace(/\s/g, '');
+  return str.length > 0;
+};
+
+/**
+ * Check for parameters required
+ * @param {object} obj
+ * @param {string} message
+ * @param {number} statusCode
+ * @returns {object| null} error response
+ */
+const validateRequired = (obj, message = 'Validation error(s)', statusCode = 400) => {
+  const validateMessages = {};
+  Object.keys(obj).forEach((key) => {
+    if (!checkRequired(obj[key])) {
+      validateMessages[key] = `The ${key} field is required`;
+    }
+  });
+
+  if (Object.keys(validateMessages).length > 0) {
+    throw ({ message, details: validateMessages, statusCode });
+  }
+};
+
 export {
   callEndpoint,
   configurePayPal,
-  checkRequestMethodType
+  checkRequestMethodType,
+  validateRequired
 };

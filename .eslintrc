@@ -30,6 +30,7 @@
     "no-unused-vars": 0,
     "curly": [1, "multi-line"],
     "linebreak-style": 0,
+    "camelcase": 0,
     "no-undef": 0,
     "import/no-unresolved": 0,
     "arrow-body-style": 0,
