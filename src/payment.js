@@ -7,9 +7,9 @@ import {
 export default async (ctx) => {
   const { data, response } = new Syncano(ctx);
   const requestMethod = ctx.meta.request.REQUEST_METHOD;
-  const { payment_details, payment_id } = ctx.args;
+  const { create_payment_details, update_payment_details, payment_id, ...list_details } = ctx.args;
   const actions = 'creating, retrieving and updating payments respectively';
-  const expectedMethodTypes = ['POST', 'GET', 'PUT'];
+  const expectedMethodTypes = ['POST', 'GET', 'PUT', 'PATCH'];
 
   try {
     await configurePayPal(data);
@@ -17,8 +17,8 @@ export default async (ctx) => {
     checkRequestMethodType(requestMethod, expectedMethodTypes, actions);
 
     if (requestMethod === 'POST') {
-      validateRequired({ payment_details });
-      const result = await callEndpoint('create', payment_details);
+      validateRequired({ create_payment_details });
+      const result = await callEndpoint('create', create_payment_details);
       const { statusCode, paypalResponse } = result;
       response.json(paypalResponse, statusCode);
     } else if (requestMethod === 'GET') {
@@ -26,13 +26,13 @@ export default async (ctx) => {
       if (payment_id) {
         result = await callEndpoint('get', null, payment_id);
       } else {
-        result = await callEndpoint('list');
+        result = await callEndpoint('list', list_details);
       }
       const { statusCode, paypalResponse } = result;
       response.json(paypalResponse, statusCode);
     } else if (requestMethod === 'PATCH' || requestMethod === 'PUT') {
-      validateRequired({ payment_details });
-      const result = await callEndpoint('update', payment_details, payment_id);
+      validateRequired({ update_payment_details });
+      const result = await callEndpoint('update', update_payment_details, payment_id);
       const { statusCode, paypalResponse } = result;
       response.json(paypalResponse, statusCode);
     }

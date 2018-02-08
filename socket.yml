@@ -15,9 +15,9 @@ endpoints:
       for showing single payment details by ID and listing payments that were created. Kindly refer to
       https://developer.paypal.com/docs/api/payments/ for more details.
     parameters:
-      payment_details:
+      create_payment_details:
         type: object
-        description: Payment detail parameters for creating and updating a payment
+        description: Payment detail parameters for creating payment
         example: |
           {
             "intent": "sale",
@@ -45,12 +45,64 @@ endpoints:
               "description": "This is the payment description."
             }]
           }
+      update_payment_details:
+        type: array
+        description: An array of JSON patch objects to apply partial updates to payment
+        example: |
+          [
+            {
+              "op":  "replace",
+              "path": "/transactions/0/amount",
+              "value": {
+                "total": "36.07",
+                "currency": "USD",
+                "details": {
+                  "subtotal": "30.00",
+                  "tax": "0.07",
+                  "shipping": "2.00,
+                  "handling_fee": "1.00",
+                  "shipping_discount": "1.00",
+                  "insurance": "4.00"
+                }
+              }
+            }
+          ]
       payment_id:
         type: string
         description: The ID of the payment to update or retrieve.
         long_description: |
           Note that this is required for get and update and shouldn't be passed for create or list payaments.
         example: "PAY-5YK922393D847794YKER7MUI"
+      count:
+        type: integer
+        description: The number of items to list in the response (List Payment)
+        example: 10
+      start_index:
+        type: integer
+        description: The start index of the payments to list (List Payment)
+        example: 2
+      start_id:
+        type: string
+        description: The ID of the starting resource in the response (List Payment)
+      start_time:
+        type: string
+        description: The start date and time for the range to show in the response (List Payment)
+        example: "2016-03-06T11:00:00Z"
+      end_time:
+        type: string
+        description: The end date and time for the range to show in the response (List Payment)
+        example: "2016-03-06T11:00:00Z"
+      payee_id:
+        type: string
+        description: Filters the payments in the response by a PayPal-assigned merchant ID that identifies the payee (List Payment)
+      sort_by:
+        type: string
+        description: Sorts the payments in the response by a create time (List Payment)
+        example: "create_time"
+      sort_order:
+        type: string
+        description: Sorts the payments in the response in descending order (List Payment)
+        example: "desc"
     response:
       mimetype: application/json
       examples:
