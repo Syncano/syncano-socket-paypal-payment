@@ -28,8 +28,7 @@ describe('payment', () => {
       meta.request.REQUEST_METHOD = 'POST';
       run('payment', { args: { create_payment_details: create_payment_params }, meta })
         .then((res) => {
-          const { data: payment } = res;
-          process.env.TEST_PAYMENT_ID = payment.id;
+          const payment = res.data;
           payment_id = payment.id;
 
           expect(res.code).to.equal(201);
@@ -70,10 +69,10 @@ describe('payment', () => {
       meta.request.REQUEST_METHOD = 'PATCH';
       run('payment', { args: { update_payment_details: update_payment_params, payment_id }, meta })
         .then((res) => {
-          const { data: updatedPayment } = res;
+          const updatedPayment = res.data;
 
           expect(res.code).to.equal(200);
-          expect(updatedPayment.id).to.equal(process.env.TEST_PAYMENT_ID);
+          expect(updatedPayment.id).to.equal(payment_id);
 
           expect(updatedPayment).to.have.property('links');
           expect(updatedPayment).to.have.property('transactions');

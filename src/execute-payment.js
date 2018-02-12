@@ -15,7 +15,7 @@ export default async (ctx) => {
 
     checkRequestMethodType(requestMethod, ['POST'], actions);
 
-    validateRequired({ payer_id, payment_id, transactions });
+    validateRequired({ payer_id, payment_id });
 
     const result = await callEndpoint('execute', { payer_id, transactions }, payment_id);
     const { statusCode, paypalResponse } = result;
