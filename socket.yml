@@ -1,5 +1,5 @@
 name: paypal-payment
-description: Description of syncano-socket-paypal-subscription-payment
+description: Integrate paypal REST API for payment endpoints
 version: 0.0.1
 
 keywords:

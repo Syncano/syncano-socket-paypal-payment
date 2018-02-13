@@ -1,6 +1,5 @@
 {
-  "name": "syncano-socket-paypal-subscription-payment",
-  "description": "Syncano Socket for PayPal subscription payment",
+  "name": "syncano-socket-paypal-payment",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Syncano/syncano-socket-paypal-payment"
