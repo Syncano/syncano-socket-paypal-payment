@@ -9,7 +9,7 @@ export default async (ctx) => {
   const requestMethod = ctx.meta.request.REQUEST_METHOD;
   const { create_payment_details, update_payment_details, payment_id, ...list_details } = ctx.args;
   const actions = 'creating, retrieving and updating payments respectively';
-  const expectedMethodTypes = ['POST', 'GET', 'PUT', 'PATCH'];
+  const expectedMethodTypes = ['POST', 'GET', 'PATCH'];
 
   try {
     await configurePayPal(data);
@@ -30,7 +30,7 @@ export default async (ctx) => {
       }
       const { statusCode, paypalResponse } = result;
       response.json(paypalResponse, statusCode);
-    } else if (requestMethod === 'PATCH' || requestMethod === 'PUT') {
+    } else if (requestMethod === 'PATCH') {
       validateRequired({ update_payment_details });
       const result = await callEndpoint('update', update_payment_details, payment_id);
       const { statusCode, paypalResponse } = result;

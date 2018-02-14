@@ -129,7 +129,7 @@ describe('payment', () => {
       run('payment', { meta })
         .then((res) => {
           const actions = 'creating, retrieving and updating payments respectively';
-          const expectedMethodTypes = ['POST', 'GET', 'PUT', 'PATCH'].join(', ');
+          const expectedMethodTypes = ['POST', 'GET', 'PATCH'].join(', ');
           const errorMessage = `Make sure to use ${expectedMethodTypes} for ${actions}.`;
           expect(res.code).to.equal(400);
           expect(res.data.message).to.equal(errorMessage);
