@@ -7,7 +7,7 @@ keywords:
   - payment
 
 endpoints:
-  payment:
+  payments:
     description: Create, get, list and Update actions for paypal payment.
     long_description: >
       This comprises of four actions for `payment` resource.

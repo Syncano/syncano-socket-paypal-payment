@@ -5,9 +5,9 @@ import 'dotenv/config';
 
 import { create_payment_params, update_payment_params, updated_insurance } from './utils/helpers';
 
-describe('payment', () => {
+describe('payments', () => {
   const { PAYPAL_CONFIG_URL, PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = process.env;
-  const meta = generateMeta('payment');
+  const meta = generateMeta('payments');
   let payment_id = '';
   const requestUrl = request(PAYPAL_CONFIG_URL);
 
@@ -26,7 +26,7 @@ describe('payment', () => {
   describe('POST', () => {
     it('should create payment successfully with valid parameters', (done) => {
       meta.request.REQUEST_METHOD = 'POST';
-      run('payment', { args: { create_payment_details: create_payment_params }, meta })
+      run('payments', { args: { create_payment_details: create_payment_params }, meta })
         .then((res) => {
           const payment = res.data;
           payment_id = payment.id;
@@ -51,7 +51,7 @@ describe('payment', () => {
     it('should return "VALIDATION_ERROR" if payer parameter absent', (done) => {
       meta.request.REQUEST_METHOD = 'POST';
       const argsValidation = { ...create_payment_params, payer: null };
-      run('payment', { args: { create_payment_details: argsValidation }, meta })
+      run('payments', { args: { create_payment_details: argsValidation }, meta })
         .then((res) => {
           expect(res.code).to.equal(400);
           expect(res.data.name).to.equal('VALIDATION_ERROR');
@@ -67,7 +67,7 @@ describe('payment', () => {
   describe('PATCH', () => {
     it('should update payment successfully with valid parameters', (done) => {
       meta.request.REQUEST_METHOD = 'PATCH';
-      run('payment', { args: { update_payment_details: update_payment_params, payment_id }, meta })
+      run('payments', { args: { update_payment_details: update_payment_params, payment_id }, meta })
         .then((res) => {
           const updatedPayment = res.data;
 
@@ -91,7 +91,7 @@ describe('payment', () => {
   describe('GET', () => {
     it('should show details for a payment if payment ID passed is valid', (done) => {
       meta.request.REQUEST_METHOD = 'GET';
-      run('payment', { args: { payment_id }, meta })
+      run('payments', { args: { payment_id }, meta })
         .then((res) => {
           expect(res.code).to.equal(200);
           expect(res.data.id).to.equal(payment_id);
@@ -108,7 +108,7 @@ describe('payment', () => {
 
     it('should list payments created if payment_id not passed as params', (done) => {
       meta.request.REQUEST_METHOD = 'GET';
-      run('payment', { args: { count: 3 }, meta })
+      run('payments', { args: { count: 3 }, meta })
         .then((res) => {
           expect(res.code).to.equal(200);
           expect(res.data).to.have.property('payments');
@@ -126,7 +126,7 @@ describe('payment', () => {
   describe('Invalid request method', () => {
     it('should return an error if request method is of type `DELETE`', (done) => {
       meta.request.REQUEST_METHOD = 'DELETE';
-      run('payment', { meta })
+      run('payments', { meta })
         .then((res) => {
           const actions = 'creating, retrieving and updating payments respectively';
           const expectedMethodTypes = ['POST', 'GET', 'PATCH'].join(', ');
