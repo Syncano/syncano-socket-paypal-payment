@@ -133,7 +133,7 @@ endpoints:
               "information_link": "https://developer.paypal.com/docs/api/payments/#errors",
               "httpStatusCode": 400
             }
-  execute-payment:
+  payment-execute:
     description: Endpoint executes a PayPal payment that the customer has approved.
     parameters:
       payment_id:
