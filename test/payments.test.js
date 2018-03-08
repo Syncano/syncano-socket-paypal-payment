@@ -128,9 +128,9 @@ describe('payments', () => {
       meta.request.REQUEST_METHOD = 'DELETE';
       run('payments', { meta })
         .then((res) => {
-          const actions = 'creating, retrieving and updating payments respectively';
+          const actionsMessage = 'creating, retrieving and updating payments respectively';
           const expectedMethodTypes = ['POST', 'GET', 'PATCH'].join(', ');
-          const errorMessage = `Make sure to use ${expectedMethodTypes} for ${actions}.`;
+          const errorMessage = `Make sure to use ${expectedMethodTypes} for ${actionsMessage}.`;
           expect(res.code).to.equal(400);
           expect(res.data.message).to.equal(errorMessage);
           done();

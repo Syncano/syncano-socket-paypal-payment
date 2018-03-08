@@ -1,9 +1,9 @@
 version: 2
 jobs:
   build:
+    name: Build
     docker:
-      # specify the version you desire here
-      - image: circleci/node:8.7.0
+      - image: circleci/node:latest
 
     working_directory: ~/repo
 
@@ -13,17 +13,69 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+          - v6-dependencies-{{ checksum "package.json" }}
 
-      - run: npm install syncano-cli@beta
       - run: npm install
 
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v6-dependencies-{{ checksum "package.json" }}
 
-      # run tests!
-      - run: npm test
+      - save_cache:
+          key: v6-repo-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/repo
+
+  test:
+    name: Tests
+    docker:
+      - image: circleci/node:latest
+
+    working_directory: ~/repo
+
+    steps:
+      - restore_cache:
+          key: v6-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - run: npm run test
+
+      - store_artifacts:
+          path: ~/repo/test/.results
+          destination: results
+
+  deploy:
+    name: Deploy
+    docker:
+      - image: circleci/node:latest
+
+    working_directory: ~/repo
+
+    steps:
+      - restore_cache:
+          key: v6-repo-{{ .Environment.CIRCLE_SHA1 }}
+      - add_ssh_keys:
+          fingerprints:
+            - "1f:22:76:e3:e3:47:58:a1:28:a4:9c:0b:a0:eb:04:a1"
+      - run: sudo npm install syncano-cli@0.55.0 -g
+      - run: s submit ${SOCKET_NAME} -b patch
+      - run: s publish ${SOCKET_NAME}
+      - run:
+          name: Avoid hosts unknown for github
+          command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+      - run: git config --global user.email $GITHUB_EMAIL && git config --global user.name $GITHUB_NAME
+      - run: git commit -a -m "Bumping version [ci skip]" && git push origin $CIRCLE_BRANCH
+
+workflows:
+  version: 2
+  build-test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master

@@ -5,10 +5,7 @@ import 'dotenv/config';
 
 import { execute_payment_response } from './utils/helpers';
 
-const args = {
-  payment_id: 'PAY-9N9834337A9191208KOZOQWI',
-  payer_id: 'CR87QHB7JTRSC'
-};
+const args = { payment_id: 'PAY-9N9834337A9191208KOZOQWI', payer_id: 'CR87QHB7JTRSC' };
 
 describe('execute-payment', () => {
   const { SOCKET_PAYMENT_EXECUTE_URL } = process.env;

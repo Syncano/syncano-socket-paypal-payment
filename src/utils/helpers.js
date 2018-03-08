@@ -33,8 +33,7 @@ const callEndpoint = (method, params = null, id = null) => {
  */
 const configurePayPal = async (data) => {
   try {
-    const config = await data.paypal_config.firstOrFail();
-    const { PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = config;
+    const { PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = await data.paypal_config.firstOrFail();
     paypal.configure({
       mode: PAYPAL_MODE,
       client_id: PAYPAL_CLIENT_ID,
@@ -54,14 +53,14 @@ const configurePayPal = async (data) => {
  * Check allowed request method type
  * @param {string} requestMethod
  * @param {array} expectedMethodTypes
- * @param {object | null } actions
+ * @param {object | null } actionsMessage
  * @returns {object | null }
  */
-const checkRequestMethodType = (requestMethod, expectedMethodTypes, actions) => {
+const checkRequestMethodType = (requestMethod, expectedMethodTypes, actionsMessage) => {
   if (!expectedMethodTypes.includes(requestMethod)) {
     const expectedAsString = expectedMethodTypes.join(', ');
     throw ({
-      message: `Make sure to use ${expectedAsString} for ${actions}.`,
+      message: `Make sure to use ${expectedAsString} for ${actionsMessage}.`,
       statusCode: 400
     });
   }
