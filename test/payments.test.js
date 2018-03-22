@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { expect } from 'chai';
-import { run, generateMeta } from 'syncano-test';
+import { run, generateMeta } from '@syncano/test';
 import 'dotenv/config';
 
 import { create_payment_params, update_payment_params, updated_insurance } from './utils/helpers';

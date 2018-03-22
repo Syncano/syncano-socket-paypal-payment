@@ -1,4 +1,4 @@
-import Syncano from 'syncano-server';
+import Syncano from '@syncano/core';
 import {
   callEndpoint, checkRequestMethodType, configurePayPal,
   validateRequired
