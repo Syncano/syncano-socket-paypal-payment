@@ -9,10 +9,10 @@ describe('payments', () => {
   const { PAYPAL_CONFIG_URL, PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = process.env;
   const meta = generateMeta('payments');
   let payment_id = '';
-  const requestUrl = request(PAYPAL_CONFIG_URL);
 
   before((done) => {
-    requestUrl.post('/')
+    request(PAYPAL_CONFIG_URL)
+      .post('/')
       .set({ 'X-API-KEY': meta.token, 'Content-Type': 'application/json' })
       .send({ PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET })
       .then(() => {
@@ -50,8 +50,8 @@ describe('payments', () => {
 
     it('should return "VALIDATION_ERROR" if payer parameter absent', (done) => {
       meta.request.REQUEST_METHOD = 'POST';
-      const argsValidation = { ...create_payment_params, payer: null };
-      run('payments', { args: { create_payment_details: argsValidation }, meta })
+      const create_payment_details = { ...create_payment_params, payer: null };
+      run('payments', { args: { create_payment_details }, meta })
         .then((res) => {
           expect(res.code).to.equal(400);
           expect(res.data.name).to.equal('VALIDATION_ERROR');
@@ -89,6 +89,21 @@ describe('payments', () => {
   });
 
   describe('GET', () => {
+    it('should return "INVALID_RESOURCE_ID" if payment id passed is invalid', (done) => {
+      meta.request.REQUEST_METHOD = 'GET';
+      run('payments', { args: { payment_id: 'INVALID_ID' }, meta })
+        .then((res) => {
+          expect(res.code).to.equal(404);
+          expect(res.data).to.have.property('debug_id');
+          expect(res.data).to.have.property('name');
+          expect(res.data.name).to.equal('INVALID_RESOURCE_ID');
+          done();
+        })
+        .catch((err) => {
+          done(err);
+        });
+    });
+
     it('should show details for a payment if payment ID passed is valid', (done) => {
       meta.request.REQUEST_METHOD = 'GET';
       run('payments', { args: { payment_id }, meta })
@@ -128,9 +143,8 @@ describe('payments', () => {
       meta.request.REQUEST_METHOD = 'DELETE';
       run('payments', { meta })
         .then((res) => {
-          const actionsMessage = 'creating, retrieving and updating payments respectively';
-          const expectedMethodTypes = ['POST', 'GET', 'PATCH'].join(', ');
-          const errorMessage = `Make sure to use ${expectedMethodTypes} for ${actionsMessage}.`;
+          const errorMessage =
+            'Make sure to use POST, GET, PATCH for creating, retrieving and updating payments respectively.';
           expect(res.code).to.equal(400);
           expect(res.data.message).to.equal(errorMessage);
           done();

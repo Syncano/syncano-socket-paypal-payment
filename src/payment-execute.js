@@ -18,14 +18,8 @@ export default async (ctx) => {
     validateRequired({ payer_id, payment_id });
 
     const { statusCode, paypalResponse } = await callEndpoint('execute', { payer_id, transactions }, payment_id);
-    response.json(paypalResponse, statusCode);
-  } catch ({ error, message, statusCode, details }) {
-    if (error) {
-      return response.json(error, statusCode);
-    }
-    if (details) {
-      return response.json({ message, details }, 400);
-    }
-    return response.json({ message }, statusCode || 400);
+    return response.json(paypalResponse, statusCode);
+  } catch ({ error, statusCode, ...errorDetails }) {
+    return response.json(error || errorDetails, statusCode || 400);
   }
 };
