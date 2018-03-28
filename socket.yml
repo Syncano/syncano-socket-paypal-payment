@@ -1,19 +1,18 @@
 name: paypal-payment
 description: Integrate paypal REST API for payment endpoints
-version: 0.0.1
+version: 0.0.2
 runtime: nodejs_v8
-
 keywords:
   - paypal
   - payment
-
 endpoints:
   payments:
-    description: Create, get, list and Update actions for paypal payment.
+    description: 'Create, get, list and Update actions for paypal payment.'
     long_description: >
-      This comprises of four actions for `payment` resource.
-      Make sure to use the request methods `POST` for creating payment, `PATCH` for updating payment and `GET`
-      for showing single payment details by ID and listing payments that were created. Kindly refer to
+      This comprises of four actions for `payment` resource. Make sure to use
+      the request methods `POST` for creating payment, `PATCH` for updating
+      payment and `GET` for showing single payment details by ID and listing
+      payments that were created. Kindly refer to
       https://developer.paypal.com/docs/api/payments/ for more details.
     inputs:
       properties:
@@ -74,44 +73,61 @@ endpoints:
         payment_id:
           type: string
           description: The ID of the payment to update or retrieve.
-          long_description: |
-            Note that this is required for get and update and shouldn't be passed for create or list payaments.
+          long_description: >
+            Note that this is required for get and update and shouldn't be
+            passed for create or list payaments.
           examples:
             - PAY-5YK922393D847794YKER7MUI
         count:
           type: integer
-          description: The number of items to list in the response (Optional for listing Payment)
+          description: >-
+            The number of items to list in the response (Optional for listing
+            Payment)
           examples:
             - 10
         start_index:
           type: integer
-          description: The start index of the payments to list (Optional for listing Payment)
+          description: >-
+            The start index of the payments to list (Optional for listing
+            Payment)
           examples:
             - 2
           start_id:
             type: string
-            description: The ID of the starting resource in the response (Optional for listing Payment)
+            description: >-
+              The ID of the starting resource in the response (Optional for
+              listing Payment)
           start_time:
             type: string
-            description: The start date and time for the range to show in the response (Optional for listing Payment)
+            description: >-
+              The start date and time for the range to show in the response
+              (Optional for listing Payment)
             examples:
-              - 2016-03-06T11:00:00Z
+              - 2016-03-06T11:00:00.000Z
           end_time:
             type: string
-            description: The end date and time for the range to show in the response (Optional for listing Payment)
+            description: >-
+              The end date and time for the range to show in the response
+              (Optional for listing Payment)
             examples:
-              - 2016-03-06T11:00:00Z
+              - 2016-03-06T11:00:00.000Z
           payee_id:
             type: string
-            description: Filters the payments in the response by a PayPal-assigned merchant ID that identifies the payee (List Payment)
+            description: >-
+              Filters the payments in the response by a PayPal-assigned merchant
+              ID that identifies the payee (List Payment)
           sort_by:
             type: string
-            description: Sorts the payments in the response by a create time (Optional for listing Payment)
+            description: >-
+              Sorts the payments in the response by a create time (Optional for
+              listing Payment)
             examples:
               - create_time
           sort_order:
             type: string
-            description: Sorts the payments in the response in descending order (Optional for listing Payment)
+            description: >-
+              Sorts the payments in the response in descending order (Optional
+              for listing Payment)
             examples:
               - desc
     outputs:
@@ -158,7 +174,9 @@ endpoints:
             - 22393D847794YKER7MUI
         transactions:
           type: array
-          description: An array of transaction details. For execute the transactions object accepts only the amount object.
+          description: >-
+            An array of transaction details. For execute the transactions object
+            accepts only the amount object.
           examples:
             - |
               [
